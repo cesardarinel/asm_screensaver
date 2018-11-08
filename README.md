@@ -13,7 +13,7 @@ Cada vez que el asterisco rebote, hay que cambiarle el color.
 - [x] mantener rebotando hasta digitar un caracter
 - [X] cambiar color cada vez que llegue a un extremo
             (Azul, amarillo, rojo, blanco en ese ciclo)
-- [ ] Coliciones
+- [X] Colisiones 
 - BONO
 - [X]  La misma tarea pero en modo gráfico
 cambiar el modo de trabajo de la tarjeta de video, dibuja pixeles (dibujar una figura)

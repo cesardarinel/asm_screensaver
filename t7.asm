@@ -6,11 +6,14 @@
 .data
 .386
 ;========================Variables declaradas aqui===========================
-caracter db 1 dup ('G')
+caracter db 1 dup ('*')
+
 pos_x db 1 dup(1) 
 pos_y db 1 dup(1)
+
 mov_x db 1 dup(1) 
 mov_y db 1 dup(1)
+
 cambiocolor db 1 dup(1)
 ultimoleido db 1 dup(' ')
 ; macro stop
@@ -25,7 +28,7 @@ main:
     and sp, not 3           ;align stack to avoid AC fault
 
 	mov pos_x,0
-	mov pos_y,1
+	mov pos_y,0
 	mov mov_x,1
 	mov mov_y,1
 	mov cambiocolor,0
@@ -96,50 +99,76 @@ cambiar_color:
 correr:
 	push ax cx bx dx
 	mov al, pos_x
-	; si es mayor a 160 marco con -1
-	cmp al,160
+	mov ah, pos_y
+	;eje X si es mayor a 160 marco con -1
+	cmp al,152
 	je finll
 	jmp next1
 	finll:
 	mov cambiocolor,1
 	mov mov_x,-1
-	; si es menor a 0 marco con 1
+	;eje X si es menor a 0 marco con 1
 	next1:
 	cmp al,0
 	je finll1
-	jmp fincorrer
+	jmp next2
 	finll1:
 	mov cambiocolor,1
 	mov mov_x,1
+	next2:
+	;eje Y si es mayor a 160 marco con -1
+	cmp ah,25
+	je finll2
+	jmp next3
+	finll2:
+	mov cambiocolor,1
+	mov mov_y,-1
+	;eje Y si es menor a 0 marco con 1
+	next3:
+	cmp ah,0
+	je finll3
+	jmp fincorrer
+	finll3:
+	mov cambiocolor,1
+	mov mov_y,1
+
 	fincorrer: 
 	call inc_x
 	call inc_y
 	mov pos_x, al
-	;mov pos_y, ah
+	mov pos_y, ah
 	pop dx bx cx ax
 	ret
 
 inc_x:
 add al,mov_x
-add al,mov_x
 ret
 inc_y:
-add ah,mov_y
 add ah,mov_y
 ret
 
 optener_posi:
 	push ax cx dx
-	xor ax, ax 
-	xor cx, cx 
-	mov al, pos_y
-	mov cl, pos_x
-	mul cx 	
-	mov bx,ax
-	cmp pos_y,1
-	jge fin_posi
+	xor ax,ax
+	xor cx,cx
+	xor bx,bx
+	mov al, pos_x
+	mov ah, pos_y
+	cmp ah,0
+	jne continua
+	mov bl,al
+    jmp fin_optener_posi
+	continua:
+	mov cl,ah
+	label1:
 	add bx,160
-	fin_posi:
+	loop label1
+	xor ax,ax
+	mov al, pos_x
+	add bx,ax
+	mov al, pos_y
+	add bx,ax
+	fin_optener_posi:
 	pop dx cx ax
 	ret
 
