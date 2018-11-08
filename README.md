@@ -10,11 +10,11 @@ Cada vez que el asterisco rebote, hay que cambiarle el color.
 
 
 - [X] imprimir un * (asterisco) y con ese * lo van a hacer moverse en la pantalla
-- [ ] mantener rebotando hasta digitar un caracter
-- [ ] cambiar color cada vez que llegue a un extremo
-(Azul, amarillo, rojo, blanco en ese ciclo)
+- [x] mantener rebotando hasta digitar un caracter
+- [X] cambiar color cada vez que llegue a un extremo
+            (Azul, amarillo, rojo, blanco en ese ciclo)
+- [ ] Coliciones
 - BONO
-- [ ]  La misma tarea pero en modo gráfico
-
+- [X]  La misma tarea pero en modo gráfico
 cambiar el modo de trabajo de la tarjeta de video, dibuja pixeles (dibujar una figura)
 

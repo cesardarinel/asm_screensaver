@@ -11,6 +11,7 @@ pos_x db 1 dup(1)
 pos_y db 1 dup(1)
 mov_x db 1 dup(1) 
 mov_y db 1 dup(1)
+cambiocolor db 1 dup(1)
 ultimoleido db 1 dup(' ')
 ; macro stop
 ;stop macro 				; espera en dl el caracter a mostrar.
@@ -25,6 +26,9 @@ main:
 
 	mov pos_x,0
 	mov pos_y,1
+	mov mov_x,1
+	mov mov_y,1
+	mov cambiocolor,0
 	mov ultimoleido,' '
 	
 	mov ax,0b800h
@@ -78,8 +82,11 @@ guardaValor:
 
 cambiar_color:
 	push bx cx dx
+	cmp cambiocolor,0
+	je cambiar_color_fin
 	inc ah
 	cmp ah,250
+	mov cambiocolor,0
 	jmp cambiar_color_fin
 	mov ah,0
 	cambiar_color_fin:
@@ -89,20 +96,37 @@ cambiar_color:
 correr:
 	push ax cx bx dx
 	mov al, pos_x
+	; si es mayor a 160 marco con -1
 	cmp al,160
 	je finll
-	jmp fincorrer
+	jmp next1
 	finll:
-	mov al,0
-	mov pos_x, al
-
+	mov cambiocolor,1
+	mov mov_x,-1
+	; si es menor a 0 marco con 1
+	next1:
+	cmp al,0
+	je finll1
+	jmp fincorrer
+	finll1:
+	mov cambiocolor,1
+	mov mov_x,1
 	fincorrer: 
-	inc al
-	inc al
+	call inc_x
+	call inc_y
 	mov pos_x, al
-
+	;mov pos_y, ah
 	pop dx bx cx ax
 	ret
+
+inc_x:
+add al,mov_x
+add al,mov_x
+ret
+inc_y:
+add ah,mov_y
+add ah,mov_y
+ret
 
 optener_posi:
 	push ax cx dx
@@ -112,6 +136,10 @@ optener_posi:
 	mov cl, pos_x
 	mul cx 	
 	mov bx,ax
+	cmp pos_y,1
+	jge fin_posi
+	add bx,160
+	fin_posi:
 	pop dx cx ax
 	ret
 
