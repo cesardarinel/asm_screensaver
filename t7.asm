@@ -9,6 +9,8 @@
 caracter db 1 dup ('G')
 pos_x db 1 dup(1) 
 pos_y db 1 dup(1)
+mov_x db 1 dup(1) 
+mov_y db 1 dup(1)
 ultimoleido db 1 dup(' ')
 ; macro stop
 ;stop macro 				; espera en dl el caracter a mostrar.
@@ -22,9 +24,9 @@ main:
     and sp, not 3           ;align stack to avoid AC fault
 
 	mov pos_x,0
-	mov pos_y,0
+	mov pos_y,1
 	mov ultimoleido,' '
-
+	
 	mov ax,0b800h
 	mov es,ax					;segmento dir. de mem de video.
 	
@@ -36,7 +38,7 @@ main:
 ;====================================ciclo_principal mantener codigo ==================================
 ciclo_principal: 
 	call pinta
-	
+	call correr
 	call pausa
 	call finalizo
 	jmp ciclo_principal  
@@ -56,14 +58,14 @@ pinta:
 	call guardaValor
 	call cambiar_color
 	mov al,caracter		
-	mov es:[bx],al	
-	call correr
+	mov es:[bx],ax	
 	ret
+	
 limpia:
 	push ax cx dx
-	;mov ah,7
+	mov ah,7
 	mov al,ultimoleido
-	mov es:[bx],al
+	mov es:[bx],ax
 	pop dx cx ax	
 	ret
 
@@ -76,11 +78,10 @@ guardaValor:
 
 cambiar_color:
 	push bx cx dx
-	;mov ah,0
-	;inc ah
-	;cmp ah,250
+	inc ah
+	cmp ah,250
 	jmp cambiar_color_fin
-	;mov ah,0
+	mov ah,0
 	cambiar_color_fin:
 	pop dx cx bx	
 	ret
@@ -88,14 +89,18 @@ cambiar_color:
 correr:
 	push ax cx bx dx
 	mov al, pos_x
-	cmp al,81
+	cmp al,160
 	je finll
 	jmp fincorrer
 	finll:
 	mov al,0
+	mov pos_x, al
+
 	fincorrer: 
 	inc al
+	inc al
 	mov pos_x, al
+
 	pop dx bx cx ax
 	ret
 
@@ -105,20 +110,8 @@ optener_posi:
 	xor cx, cx 
 	mov al, pos_y
 	mov cl, pos_x
-	;xor bx, bx       ; clear bx 
-	cmp al,80
-    jge mas_81
-	jmp menos_81
-	mas_81:
 	mul cx 	
 	mov bx,ax
-	jmp fin_81
-	menos_81:
-	;add cx,al
-	;add cx,ah	;(ah*81)+(al)
-	mov bx,cx	
-	fin_81:
-	;add bx,2
 	pop dx cx ax
 	ret
 
